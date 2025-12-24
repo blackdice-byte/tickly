@@ -1,4 +1,5 @@
 import { AddTodoInput } from '@/components/add-todo-input';
+import { SortPicker } from '@/components/sort-picker';
 import { ThemedText } from '@/components/themed-text';
 import { ThemedView } from '@/components/themed-view';
 import { TodoItem } from '@/components/todo-item';
@@ -10,7 +11,11 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 
 export default function ProjectDetailScreen() {
   const { id } = useLocalSearchParams<{ id: string }>();
-  const { getTodosByProject, getProjectById, addTodo, toggleTodo, deleteTodo } = useTodoStore();
+  const {
+    getTodosByProject, getProjectById, addTodo, toggleTodo, deleteTodo,
+    updateTodoPriority, addSubtask, toggleSubtask, deleteSubtask,
+    toggleTag, tags, sortOption, setSortOption, getTagById,
+  } = useTodoStore();
   const bg = useThemeColor({}, 'background');
 
   const project = getProjectById(id);
@@ -38,6 +43,7 @@ export default function ProjectDetailScreen() {
         </ThemedView>
 
         <AddTodoInput onAdd={(title) => addTodo(title, id)} />
+        <SortPicker value={sortOption} onChange={setSortOption} />
 
         <FlatList
           data={[...pendingTodos, ...completedTodos]}
@@ -46,8 +52,18 @@ export default function ProjectDetailScreen() {
             <TodoItem
               title={item.title}
               completed={item.completed}
+              priority={item.priority}
+              subtasks={item.subtasks}
+              tags={item.tagIds.map((tid) => getTagById(tid)).filter(Boolean) as any}
+              tagIds={item.tagIds}
+              allTags={tags}
               onToggle={() => toggleTodo(item.id)}
               onDelete={() => deleteTodo(item.id)}
+              onPriorityChange={(p) => updateTodoPriority(item.id, p)}
+              onAddSubtask={(title) => addSubtask(item.id, title)}
+              onToggleSubtask={(subId) => toggleSubtask(item.id, subId)}
+              onDeleteSubtask={(subId) => deleteSubtask(item.id, subId)}
+              onToggleTag={(tagId) => toggleTag(item.id, tagId)}
             />
           )}
           ListEmptyComponent={

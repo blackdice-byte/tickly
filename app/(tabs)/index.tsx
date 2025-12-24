@@ -1,5 +1,6 @@
 import { AddTodoInput } from '@/components/add-todo-input';
 import { SettingsModal } from '@/components/settings-modal';
+import { SortPicker } from '@/components/sort-picker';
 import { ThemedText } from '@/components/themed-text';
 import { ThemedView } from '@/components/themed-view';
 import { TodoItem } from '@/components/todo-item';
@@ -12,7 +13,11 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 
 export default function TasksScreen() {
   const [settingsVisible, setSettingsVisible] = useState(false);
-  const { todos, toggleTodo, deleteTodo, addTodo } = useTodoStore();
+  const {
+    todos, tags, sortOption, toggleTodo, deleteTodo, addTodo,
+    updateTodoPriority, addSubtask, toggleSubtask, deleteSubtask,
+    toggleTag, setSortOption, getTagById,
+  } = useTodoStore();
   const bg = useThemeColor({}, 'background');
   const icon = useThemeColor({}, 'icon');
 
@@ -34,6 +39,7 @@ export default function TasksScreen() {
       </ThemedView>
 
       <AddTodoInput onAdd={(title) => addTodo(title)} />
+      <SortPicker value={sortOption} onChange={setSortOption} />
 
       <FlatList
         data={[...pendingTodos, ...completedTodos]}
@@ -42,8 +48,18 @@ export default function TasksScreen() {
           <TodoItem
             title={item.title}
             completed={item.completed}
+            priority={item.priority}
+            subtasks={item.subtasks}
+            tags={item.tagIds.map((id) => getTagById(id)).filter(Boolean) as any}
+            tagIds={item.tagIds}
+            allTags={tags}
             onToggle={() => toggleTodo(item.id)}
             onDelete={() => deleteTodo(item.id)}
+            onPriorityChange={(p) => updateTodoPriority(item.id, p)}
+            onAddSubtask={(title) => addSubtask(item.id, title)}
+            onToggleSubtask={(subId) => toggleSubtask(item.id, subId)}
+            onDeleteSubtask={(subId) => deleteSubtask(item.id, subId)}
+            onToggleTag={(tagId) => toggleTag(item.id, tagId)}
           />
         )}
         ListEmptyComponent={
