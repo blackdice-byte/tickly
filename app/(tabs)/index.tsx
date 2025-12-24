@@ -17,7 +17,7 @@ export default function TasksScreen() {
   return (
     <SafeAreaView style={[styles.container, { backgroundColor: bg }]} edges={['top']}>
       <ThemedView style={styles.header}>
-        <ThemedText type="title">Tasks</ThemedText>
+        <ThemedText type="title">Tickly</ThemedText>
         <ThemedText style={styles.subtitle}>
           {pendingTodos.length} pending, {completedTodos.length} completed
         </ThemedText>
