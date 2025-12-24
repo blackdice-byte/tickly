@@ -1,22 +1,33 @@
-import { AddTodoInput } from '@/components/add-todo-input';
-import { SortPicker } from '@/components/sort-picker';
-import { ThemedText } from '@/components/themed-text';
-import { ThemedView } from '@/components/themed-view';
-import { TodoItem } from '@/components/todo-item';
-import { useThemeColor } from '@/hooks/use-theme-color';
-import { useTodoStore } from '@/store/todo-store';
-import { Stack, useLocalSearchParams } from 'expo-router';
-import { FlatList, StyleSheet, View } from 'react-native';
-import { SafeAreaView } from 'react-native-safe-area-context';
+import { AddTodoInput } from "@/components/add-todo-input";
+import { SortPicker } from "@/components/sort-picker";
+import { ThemedText } from "@/components/themed-text";
+import { ThemedView } from "@/components/themed-view";
+import { TodoItem } from "@/components/todo-item";
+import { useThemeColor } from "@/hooks/use-theme-color";
+import { useTodoStore } from "@/store/todo-store";
+import { Stack, useLocalSearchParams } from "expo-router";
+import { FlatList, StyleSheet, View } from "react-native";
+import { SafeAreaView } from "react-native-safe-area-context";
 
 export default function ProjectDetailScreen() {
   const { id } = useLocalSearchParams<{ id: string }>();
   const {
-    getTodosByProject, getProjectById, addTodo, toggleTodo, deleteTodo,
-    updateTodoPriority, addSubtask, toggleSubtask, deleteSubtask,
-    toggleTag, tags, sortOption, setSortOption, getTagById,
+    getTodosByProject,
+    getProjectById,
+    addTodo,
+    toggleTodo,
+    deleteTodo,
+    updateTodoPriority,
+    addSubtask,
+    toggleSubtask,
+    deleteSubtask,
+    toggleTag,
+    tags,
+    sortOption,
+    setSortOption,
+    getTagById,
   } = useTodoStore();
-  const bg = useThemeColor({}, 'background');
+  const bg = useThemeColor({}, "background");
 
   const project = getProjectById(id);
   const todos = getTodosByProject(id);
@@ -34,7 +45,10 @@ export default function ProjectDetailScreen() {
   return (
     <>
       <Stack.Screen options={{ title: project.name, headerShown: true }} />
-      <SafeAreaView style={[styles.container, { backgroundColor: bg }]} edges={['bottom']}>
+      <SafeAreaView
+        style={[styles.container, { backgroundColor: bg }]}
+        edges={["bottom"]}
+      >
         <ThemedView style={styles.header}>
           <View style={[styles.colorDot, { backgroundColor: project.color }]} />
           <ThemedText style={styles.subtitle}>
@@ -54,7 +68,9 @@ export default function ProjectDetailScreen() {
               completed={item.completed}
               priority={item.priority}
               subtasks={item.subtasks}
-              tags={item.tagIds.map((tid) => getTagById(tid)).filter(Boolean) as any}
+              tags={
+                item.tagIds.map((tid) => getTagById(tid)).filter(Boolean) as any
+              }
               tagIds={item.tagIds}
               allTags={tags}
               onToggle={() => toggleTodo(item.id)}
@@ -68,7 +84,9 @@ export default function ProjectDetailScreen() {
           )}
           ListEmptyComponent={
             <ThemedView style={styles.empty}>
-              <ThemedText style={styles.emptyText}>No tasks in this project</ThemedText>
+              <ThemedText style={styles.emptyText}>
+                No tasks in this project
+              </ThemedText>
             </ThemedView>
           }
         />
@@ -79,9 +97,15 @@ export default function ProjectDetailScreen() {
 
 const styles = StyleSheet.create({
   container: { flex: 1 },
-  header: { paddingHorizontal: 16, paddingTop: 8, flexDirection: 'row', alignItems: 'center', gap: 8 },
+  header: {
+    paddingHorizontal: 16,
+    paddingTop: 8,
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 8,
+  },
   colorDot: { width: 12, height: 12, borderRadius: 6 },
   subtitle: { opacity: 0.6 },
-  empty: { padding: 32, alignItems: 'center' },
+  empty: { padding: 32, alignItems: "center" },
   emptyText: { opacity: 0.5 },
 });
